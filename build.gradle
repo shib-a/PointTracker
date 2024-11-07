@@ -41,7 +41,7 @@ dependencies {
     implementation 'org.hibernate:hibernate-core:6.6.1.Final'
 
 }
-
+//
 tasks.named('test') {
     useJUnitPlatform()
 }
