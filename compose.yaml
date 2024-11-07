@@ -3,8 +3,9 @@ services:
     env_file:
       - .env
     image: 'postgres:latest'
+    restart: unless-stopped
     environment:
-      - 'POSTGRES_DB=mydatabase'
+      - 'POSTGRES_DB=postgres'
       - POSTGRES_PASSWORD=$DATABASE_LOC_PASS
       - POSTGRES_USER=$DATABASE_LOC_USER
     ports:

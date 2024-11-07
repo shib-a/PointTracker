@@ -3,7 +3,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.context.annotation.SessionScope;
 
+//@Bean(name = "pointBean")
+@SessionScope
 @Entity
 @Table(name="points")
 public class Point {

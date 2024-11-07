@@ -2,8 +2,7 @@ package com.example.web_4;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class DatabaseService {
@@ -13,8 +12,8 @@ public class DatabaseService {
     public DatabaseService(PointRepository pointRepository) {
         this.pointRepository = pointRepository;
     }
-    public Optional<Point> getAllByHitNotNull(){
-        return pointRepository.getAllByHitNotNull();
+    public List<Point> findAll(){
+        return pointRepository.findAll();
     }
     Point save(Point point){
         return pointRepository.save(point);
