@@ -9,7 +9,7 @@ import jakarta.persistence.Table;
 public class Point {
     @Id
     @GeneratedValue
-    protected long id;
+    private Long id;
     private double x;
     private double y;
     private double r;
