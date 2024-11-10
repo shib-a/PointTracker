@@ -1,23 +1,42 @@
 package com.example.web_4;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import org.springframework.context.annotation.Bean;
-import org.springframework.web.context.annotation.SessionScope;
+import jakarta.persistence.*;
+
+import java.io.Serializable;
 
 //@Bean(name = "pointBean")
-@SessionScope
+//@SessionScope
 @Entity
-@Table(name="points")
-public class Point {
+@Table(name="points", schema = "public")
+public class Point implements Serializable {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name="id", unique = true)
     private Long id;
+    @Column(name="x", columnDefinition = "DOUBLE PRECISION")
     private double x;
+    @Column(name="y", columnDefinition = "DOUBLE PRECISION")
     private double y;
+    @Column(name="r")
     private double r;
+    @Column(name="hit")
     private boolean hit;
+    public Point(double x, double y, double r, boolean hit){
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.hit=hit;
+    }
+
+    public Point() {
+    }
+    public Point(long id, double x, double y, double r, boolean hit){
+        this.id=id;
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.hit=hit;
+    }
+
     public double getR() {
         return r;
     }
@@ -44,6 +63,11 @@ public class Point {
 
     public void setHit(boolean hit) {
         this.hit = hit;
+    }
+    public Point(double x, double y, double r){
+        this.x=x;
+        this.y=y;
+        this.r=r;
     }
 
     public void setR(double r) {
