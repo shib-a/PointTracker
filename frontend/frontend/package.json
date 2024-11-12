@@ -11,7 +11,8 @@
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4",
     "axios": "^1.7.7",
-    "prime-react": "^1.0.0"
+    "prime-react": "^1.0.0",
+    "jquery": "^3.7.1"
   },
   "scripts": {
     "start": "react-scripts start",
@@ -37,5 +38,11 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8080"
+  "options": {
+    "allowedHosts": [
+      "localhost",
+      ".localhost"
+    ],
+    "proxy": "http://localhost:8080"
+  }
 }

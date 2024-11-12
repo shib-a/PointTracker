@@ -8,10 +8,12 @@ import java.util.List;
 @Service
 public class DatabaseService {
 //    @Autowired
+    public SseController sseController;
     private final PointRepository pointRepository;
     @Autowired
-    public DatabaseService(PointRepository pointRepository) {
+    public DatabaseService(PointRepository pointRepository, SseController sseController) {
         this.pointRepository = pointRepository;
+        this.sseController=sseController;
     }
     @Transactional
     public List<Point> findAll(){
@@ -19,7 +21,9 @@ public class DatabaseService {
     }
     @Transactional
     public Point save(Point point){
-        return pointRepository.save(point);
+        var s = pointRepository.save(point);
+        sseController.sendUpdate(true);
+        return s;
     }
     void delete(Point point){
         pointRepository.delete(point);

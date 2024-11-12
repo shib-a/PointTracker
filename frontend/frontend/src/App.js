@@ -2,8 +2,6 @@ import './App.css';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import Button from "./Button";
-import Main from "./Main";
-import {getValue} from "@testing-library/user-event/dist/utils";
 import Slider from "./Slider";
 
 class Point{
@@ -15,7 +13,12 @@ class Point{
         this.hit=hit;
     }
 }
+const eventSource = new EventSource('/api/points/stream');
 
+eventSource.onmessage = (event) => {
+    const data = JSON.parse(event.data);
+    console.log('Received update:', data);
+};
 function App() {
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
@@ -24,23 +27,43 @@ function App() {
     const [y_val, setY_val] = useState(0);
     const [r_val, setR_val] = useState(0);
     const [hit_val, setHit_val] = useState(false);
+
+    async function getData(){
+        // return axios.get('http://localhost:8080/api/get');
+        const response = await axios.get('http://localhost:8080/api/get');
+        let result = response.data;
+        setPoints(result.map(point => new Point(point.x, point.y, point.r, point.hit)))
+    }
+    async function postData(obj_data){
+        const result = await axios.post('http://localhost:8080/api/post',obj_data);
+        return result.data;
+    }
+
+    useEffect(()=> {
+        // axios.get('http://localhost:8080/api/get')
+        // .then(response => {
+        // console.log(response.data);
+        // let temp = response.data.map(point => new Point(point.x, point.y, point.r, point.hit));
+        // setPoints(temp);
+
+        // setButtonClicked(false);
+        // points.forEach(point => console.log(point));
+        getData();
+        console.log(points)
+        const eventSource = new EventSource("http://localhost:8080/sse/updates")
+        eventSource.addEventListener('update', (event) => {
+            if(event.data===true){
+                getData();
+            }
+        })
+        }, [points]);
     useEffect(() => {
         if(buttonClicked) {
-            const obj_data = {point};
-            axios.post('http://localhost:8080/api/points',obj_data)
-                .then(response => {
-                    console.log(response.data);
-                    let temp = response.data.map(point => new Point(point.x, point.y, point.r, point.hit));
-                    setPoints(temp);
-                    console.log(points)
-                    setButtonClicked(false);
-                    // points.forEach(point => console.log(point));
-                })
-                .catch(error => {
-                    setButtonClicked(false);
-                    console.error("error", error);
-                });
-        }}, [buttonClicked, point]);
+            setButtonClicked(false);
+            const obj_data = new Point(x_val,y_val,r_val);
+            console.log(obj_data)
+            postData(obj_data);
+        }}, [buttonClicked, point, points, x_val, y_val, r_val]);
         return(
             <html>
             <head>
@@ -62,40 +85,45 @@ function App() {
                         <div><label>Изменение Y</label></div>
                         {/*<inputText type="text" name="ch_y" placeholder="-5..5" id="data_ch_y" value="#{pointBean.y}">*/}
                         {/*</inputText>*/}
-                        <Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e)=>setY_val(e.target.value)}/>
+                        <Slider min={-5} max={5} value={y_val} step={0.25} onChange={(e)=> {
+                            setY_val(e.target.value)
+                            console.log(y_val)
+                        }}/>
                     </div>
                     <div className="q_entry" id='r_choice'>
                         <div>
                             <label>Изменение R</label>
                         </div>
-                        <Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e)=>setR_val(e.target.value)}/>
+                        <Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e)=>setR_val(e.target.value)}/>
                     </div>
                     <Button onClick={() => {
                         setButtonClicked(true);
-                    }} children={"send"}/>
+                    }} children={"send"} type={"button"}/>
                 </form>
                 <div id="graph_div">
                     <canvas id="graph" width="400" height="400">
                     </canvas>
                 </div>
-                <dataTable id="table" value="#{pointListBean.pointList}" var="point">
-                    <column>
-                        <facet name="header" className="t_d">x</facet>
-                        {/*#{point.x}*/}
-                    </column>
-                    <column>
-                        <facet name="header" className="t_d">y</facet>
-                        {/*#{point.y}*/}
-                    </column>
-                    <column>
-                        <facet name="header" className="t_d">r</facet>
-                        {/*#{point.r}*/}
-                    </column>
-                    <column>
-                        <facet name="header" className="t_d">hit</facet>
-                        {/*#{point.hit}*/}
-                    </column>
-                </dataTable>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>r</th>
+                        <th>hit?</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {points.map((pt) => (
+                        <tr>
+                            <td>{pt.x}</td>
+                            <td>{pt.y}</td>
+                            <td>{pt.r}</td>
+                            <td>{pt.hit ? "yes" : "no"}</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
                 <form id="goBackForm">
                     {/*<commandButton id="redirectButton" value="Go back" action="index"/>*/}
                 </form>
