@@ -1,8 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {getValue} from "@testing-library/user-event/dist/utils";
 import axios from "axios";
-import Slider from "./Slider";
-import Button from "./Button";
+import Slider from "../components/Slider";
+import Button from "../components/Button";
+import {Point} from "../utils/point"
+import {useNavigate} from "react-router-dom";
+import button from "../components/Button";
 
 
 const eventSource = new EventSource('/api/points/stream');
@@ -10,7 +13,7 @@ eventSource.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log('Received update:', data);
 };
-function Main(){
+function Main() {
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -20,41 +23,54 @@ function Main(){
     const [r_val, setR_val] = useState(0);
     const [hit_val, setHit_val] = useState(false);
 
-    async function getData(){
+    const navigate = useNavigate();
+    function logout(){
+        navigate("/");
+    }
+
+    async function getData() {
         // return axios.get('http://localhost:8080/api/get');
         const response = await axios.get('http://localhost:8080/api/get');
         let result = response.data;
         setPoints(result.map(point => new Point(point.x, point.y, point.r, point.hit)))
     }
-    async function postData(obj_data){
-        const result = await axios.post('http://localhost:8080/api/post',obj_data);
+
+    async function postData(obj_data) {
+        const result = await axios.post('http://localhost:8080/api/post', obj_data);
         return result.data;
     }
 
-    useEffect(()=> {
+    async function clearData() {
+        const result = await axios.delete('http://localhost:8080/api/clear');
+        return result.data
+    }
+
+    useEffect(() => {
         getData();
         console.log(points)
         const eventSource = new EventSource("http://localhost:8080/sse/updates")
         eventSource.addEventListener('update', (event) => {
-            if(event.data===true){
+            if (event.data === true) {
                 getData();
             }
         })
     }, [points]);
     useEffect(() => {
-        if(submitButtonClicked) {
+        if (submitButtonClicked) {
             setSubmitButtonClicked(false);
-            const obj_data = new Point(x_val,y_val,r_val);
+            const obj_data = new Point(x_val, y_val, r_val);
             console.log(obj_data)
             postData(obj_data);
-        }}, [submitButtonClicked, point, points, x_val, y_val, r_val]);
+        }
+    }, [submitButtonClicked, point, points, x_val, y_val, r_val]);
     useEffect(() => {
-        if(clearButtonClicked) {
+        if (clearButtonClicked) {
             setClearButtonClicked(false);
-            setPoints([]);
+            clearData();
+            // setPoints([]);
         }
     }, [clearButtonClicked, points]);
-    return(
+    return (
         <html>
         <head>
             <title>web_4</title>
@@ -64,16 +80,17 @@ function Main(){
             <header className="main_header">
                 <h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>
             </header>
+            <Button onClick={logout} type={button} children={"logout"}/>
             <form id="data">
                 <div className="q_entry">
                     <div>
                         <label>Изменение X</label>
                     </div>
-                    <Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e)=>setX_val(e.target.value)}/>
+                    <Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e) => setX_val(e.target.value)}/>
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>
-                    <Slider min={-5} max={5} value={y_val} step={0.25} onChange={(e)=> {
+                    <Slider min={-5} max={5} value={y_val} step={0.25} onChange={(e) => {
                         setY_val(e.target.value)
                         console.log(y_val)
                     }}/>
@@ -82,7 +99,7 @@ function Main(){
                     <div>
                         <label>Изменение R</label>
                     </div>
-                    <Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e)=>setR_val(e.target.value)}/>
+                    <Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e) => setR_val(e.target.value)}/>
                 </div>
                 <Button onClick={() => {
                     setSubmitButtonClicked(true);
@@ -92,7 +109,7 @@ function Main(){
                 <canvas id="graph" width="400" height="400">
                 </canvas>
             </div>
-            <Button onClick={setSubmitButtonClicked(true)} children={"clear"} type={"button"}/>
+            <Button onClick={() => setClearButtonClicked(true)} children={"clear"} type={"button"}/>
             <table>
                 <thead>
                 <tr>
@@ -117,8 +134,9 @@ function Main(){
                 {/*<commandButton id="redirectButton" value="Go back" action="index"/>*/}
             </form>
         </div>
-        <outputScript  name="graph.js"/>
+        <outputScript name="graph.js"/>
         </body>
         </html>
-    );}
+    );
+}
 export default Main;
