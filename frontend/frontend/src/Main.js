@@ -120,6 +120,5 @@ function Main(){
         <outputScript  name="graph.js"/>
         </body>
         </html>
-    );
-}
+    );}
 export default Main;

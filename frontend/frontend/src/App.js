@@ -1,25 +1,24 @@
 import './App.css';
 import React, {useEffect, useState} from "react";
+// import Point from "./point";
 import axios from "axios";
 import Slider from "./Slider";
 import {Button} from 'primereact/button';
 import {} from  "primereact/speeddial"
-// class Point{
-//     constructor(x,y,r,hit) {
-//         // this.id=id;
-//         this.x=x;
-//         this.y=y;
-//         this.r=r;
-//         this.hit=hit;
-//     }
-// }
 const eventSource = new EventSource('/api/points/stream');
 
 eventSource.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log('Received update:', data);
 };
-
+class Point{
+    constructor(x,y,r,hit){
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.hit = hit;
+    }
+}
 function App() {
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
@@ -40,6 +39,10 @@ function App() {
         const result = await axios.post('http://localhost:8080/api/post',obj_data);
         return result.data;
     }
+    async function clearData(){
+        const result = await axios.delete('http://localhost:8080/api/clear');
+        return result.data
+    }
 
     useEffect(()=> {
         getData();
@@ -58,10 +61,11 @@ function App() {
             console.log(obj_data)
             postData(obj_data);
         }}, [submitButtonClicked, point, points, x_val, y_val, r_val]);
-    useEffect(() => {
+    useEffect( () => {
         if(clearButtonClicked) {
             setClearButtonClicked(false);
-            setPoints([]);
+            clearData();
+            // setPoints([]);
         }
     }, [clearButtonClicked, points]);
         return(
@@ -102,7 +106,7 @@ function App() {
                     <canvas id="graph" width="400" height="400">
                     </canvas>
                 </div>
-                <Button onClick={() => setSubmitButtonClicked(true)} children={"clear"} type={"button"}/>
+                <Button onClick={() => setClearButtonClicked(true)} children={"clear"} type={"button"}/>
                 <table>
                     <thead>
                     <tr>

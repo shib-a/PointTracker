@@ -1,10 +1,7 @@
 package com.example.web_4;
 import jakarta.persistence.*;
-
 import java.io.Serializable;
 
-//@Bean(name = "pointBean")
-//@SessionScope
 @Entity
 @Table(name="points", schema = "public")
 public class Point implements Serializable {

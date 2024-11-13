@@ -27,7 +27,7 @@ public class PointController {
         pointDatabaseService.save(point);
         return null;
     }
-    @DeleteMapping("clear")
+    @DeleteMapping("/clear")
     public void clear(){
         pointDatabaseService.deleteAll();
     }
