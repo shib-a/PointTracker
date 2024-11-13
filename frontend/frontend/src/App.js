@@ -1,28 +1,30 @@
 import './App.css';
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import Button from "./Button";
 import Slider from "./Slider";
-
-class Point{
-    constructor(x,y,r,hit) {
-        // this.id=id;
-        this.x=x;
-        this.y=y;
-        this.r=r;
-        this.hit=hit;
-    }
-}
+import {Button} from 'primereact/button';
+import {} from  "primereact/speeddial"
+// class Point{
+//     constructor(x,y,r,hit) {
+//         // this.id=id;
+//         this.x=x;
+//         this.y=y;
+//         this.r=r;
+//         this.hit=hit;
+//     }
+// }
 const eventSource = new EventSource('/api/points/stream');
 
 eventSource.onmessage = (event) => {
     const data = JSON.parse(event.data);
     console.log('Received update:', data);
 };
+
 function App() {
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
-    const [buttonClicked, setButtonClicked] = useState(false);
+    const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
+    const [clearButtonClicked, setClearButtonClicked] = useState(false);
     const [x_val, setX_val] = useState(0);
     const [y_val, setY_val] = useState(0);
     const [r_val, setR_val] = useState(0);
@@ -40,14 +42,6 @@ function App() {
     }
 
     useEffect(()=> {
-        // axios.get('http://localhost:8080/api/get')
-        // .then(response => {
-        // console.log(response.data);
-        // let temp = response.data.map(point => new Point(point.x, point.y, point.r, point.hit));
-        // setPoints(temp);
-
-        // setButtonClicked(false);
-        // points.forEach(point => console.log(point));
         getData();
         console.log(points)
         const eventSource = new EventSource("http://localhost:8080/sse/updates")
@@ -58,12 +52,18 @@ function App() {
         })
         }, [points]);
     useEffect(() => {
-        if(buttonClicked) {
-            setButtonClicked(false);
+        if(submitButtonClicked) {
+            setSubmitButtonClicked(false);
             const obj_data = new Point(x_val,y_val,r_val);
             console.log(obj_data)
             postData(obj_data);
-        }}, [buttonClicked, point, points, x_val, y_val, r_val]);
+        }}, [submitButtonClicked, point, points, x_val, y_val, r_val]);
+    useEffect(() => {
+        if(clearButtonClicked) {
+            setClearButtonClicked(false);
+            setPoints([]);
+        }
+    }, [clearButtonClicked, points]);
         return(
             <html>
             <head>
@@ -83,8 +83,6 @@ function App() {
                     </div>
                     <div className="q_entry">
                         <div><label>Изменение Y</label></div>
-                        {/*<inputText type="text" name="ch_y" placeholder="-5..5" id="data_ch_y" value="#{pointBean.y}">*/}
-                        {/*</inputText>*/}
                         <Slider min={-5} max={5} value={y_val} step={0.25} onChange={(e)=> {
                             setY_val(e.target.value)
                             console.log(y_val)
@@ -97,13 +95,14 @@ function App() {
                         <Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e)=>setR_val(e.target.value)}/>
                     </div>
                     <Button onClick={() => {
-                        setButtonClicked(true);
+                        setSubmitButtonClicked(true);
                     }} children={"send"} type={"button"}/>
                 </form>
                 <div id="graph_div">
                     <canvas id="graph" width="400" height="400">
                     </canvas>
                 </div>
+                <Button onClick={() => setSubmitButtonClicked(true)} children={"clear"} type={"button"}/>
                 <table>
                     <thead>
                     <tr>
@@ -133,34 +132,28 @@ function App() {
             </html>
         );
   //   const [points, setPoints] = useState([]);
-  //   const [buttonClicked, setButtonClicked] = useState(false);
+  //   const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
   //   useEffect(() => {
-  //       if(buttonClicked) {
+  //       if(submitButtonClicked) {
   //           axios.get('http://localhost:8080/api/points')
   //               .then(response => {
   //                   console.log(response.data);
   //                   let temp = response.data.map(point => new Point(point.x, point.y, point.r, point.hit));
   //                   setPoints(temp);
   //                   console.log(points)
-  //                   setButtonClicked(false);
+  //                   setSubmitButtonClicked(false);
   //                   // points.forEach(point => console.log(point));
   //               })
   //               .catch(error => {
-  //                   setButtonClicked(false);
+  //                   setSubmitButtonClicked(false);
   //                   console.error("error", error);
   //               });
-  //       }}, [buttonClicked, points]);
+  //       }}, [submitButtonClicked, points]);
   //   const handleClick = () => {
   //       // Update state on button click
-  //       setButtonClicked(true);
+  //       setSubmitButtonClicked(true);
   //   };
   // return (
-  //     <div>
-  //         <button onClick={handleClick}>click me</button>
-  //       <ul>
-  //         {points.map(point => <li>{point.x},{point.y},{point.r},{point.hit}</li>)}
-  //       </ul>
-  //     </div>
   // );
 }
 

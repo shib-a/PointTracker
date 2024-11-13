@@ -6,12 +6,12 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class DatabaseService {
+public class PointDatabaseService {
 //    @Autowired
     public SseController sseController;
     private final PointRepository pointRepository;
     @Autowired
-    public DatabaseService(PointRepository pointRepository, SseController sseController) {
+    public PointDatabaseService(PointRepository pointRepository, SseController sseController) {
         this.pointRepository = pointRepository;
         this.sseController=sseController;
     }
@@ -28,7 +28,9 @@ public class DatabaseService {
     void delete(Point point){
         pointRepository.delete(point);
     }
+    @Transactional
     void deleteAll(){
         pointRepository.deleteAll();
+        sseController.sendUpdate(true);
     }
 }

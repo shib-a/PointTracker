@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 function Slider({min,max,step,value,onChange}) {
     return(
         <div className="slider_div">
@@ -6,5 +6,5 @@ function Slider({min,max,step,value,onChange}) {
             <span className="slider_label">{value}</span>
         </div>
     );
-};
+}
 export default Slider;
