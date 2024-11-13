@@ -9,8 +9,12 @@ public class UserController {
     public void register(@RequestBody User user) {
 
     }
-    @PutMapping("login")
+    @PutMapping("/login")
     public void login(@RequestBody User user) {
+
+    }
+    @PutMapping("/logout")
+    public void logout(@RequestBody User user) {
 
     }
 }
