@@ -6,17 +6,21 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
-    private UserDatabaseService databaseService;
+    private final UserDatabaseService databaseService;
 
     @Autowired
     public UserController(UserDatabaseService userDatabaseService){this.databaseService=userDatabaseService;}
     @PostMapping("/register")
-    public User register(@RequestBody User user) {
+    public UserDTO register(@RequestBody UserDTO userDTO) {
+        var user = UserClassConverter.toClass(userDTO);
         var fetchUserWithLogin = databaseService.findUserByUsername(user.getUsername());
         if (fetchUserWithLogin.isEmpty()) {
-            return databaseService.save(user);
+            var t = UserClassConverter.toDTO(databaseService.save(user));
+            t.setMessage(new StatusObj(STATUS.SUCCESS,"registered"));
+            return t;
         } else {
-            return login(user);
+            userDTO.setMessage(new StatusObj(STATUS.FAILED,"user already exists"));
+            return userDTO;
         }
     }
     @PutMapping("/login")
