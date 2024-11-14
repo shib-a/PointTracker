@@ -1,5 +1,7 @@
 package com.example.web_4;
 
+import com.example.web_4.entitiesAndDTOs.User;
+import com.example.web_4.entitiesAndDTOs.UserDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,10 +36,10 @@ public class UserDatabaseService {
     }
     @Transactional
     public User findUserByUsernameAndPassword(User user){
-        var fetchedByName = findUserByUsername(user.getUsername());
-        if(fetchedByName.size()==1){
-            return userRepository.findByUsernameEqualsAndPasswordEquals(user.getUsername(),encoder.encode(user.getPassword()));
-        }
-        return new User("wrong", "password");
+        return userRepository.findByUsernameEqualsAndPasswordEquals(user.getUsername(), encoder.encode(user.getPassword()));
+    }
+    @Transactional
+    public User findByUsernameEqualsAndPasswordEquals(String username, String password){
+        return userRepository.findByUsernameEqualsAndPasswordEquals(username, encoder.encode(password));
     }
 }

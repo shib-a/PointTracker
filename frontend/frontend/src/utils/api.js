@@ -14,3 +14,7 @@ export async function getPoints(){
     const result = await axios.post(url+"/users");
     return result;
 }
+export async function putUser(data){
+    const result = await axios.put(url+"/users/login",data);
+    return result.data;
+}

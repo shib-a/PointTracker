@@ -1,5 +1,6 @@
 package com.example.web_4;
 
+import com.example.web_4.entitiesAndDTOs.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

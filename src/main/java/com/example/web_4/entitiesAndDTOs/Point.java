@@ -1,4 +1,4 @@
-package com.example.web_4;
+package com.example.web_4.entitiesAndDTOs;
 import jakarta.persistence.*;
 import java.io.Serializable;
 
