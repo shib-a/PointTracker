@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/users")
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
     private final UserDatabaseService databaseService;
 
@@ -17,11 +18,14 @@ public class UserController {
     @PostMapping("/register")
     public UserDTO register(@RequestBody UserDTO userDTO) {
         var user = UserClassConverter.toClass(userDTO);
+        System.out.println(user.getUsername());
+        System.out.println();
+        System.out.println(user.getPassword());
         var fetchUserWithLogin = databaseService.findUserByUsername(user.getUsername());
         if (fetchUserWithLogin.isEmpty()) {
-            var t = UserClassConverter.toDTO(databaseService.save(user));
-            t.setMessage(new StatusObj(STATUS.SUCCESS,"registered"));
-            return t;
+            databaseService.save(user);
+            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,"registered"));
+            return userDTO;
         } else {
             userDTO.setMessage(new StatusObj(STATUS.FAILED,"user already exists"));
             return userDTO;
@@ -31,16 +35,17 @@ public class UserController {
     public UserDTO login(@RequestBody UserDTO userDTO) {
         var user = UserClassConverter.toClass(userDTO);
         var fetchedByName = databaseService.findUserByUsername(user.getUsername());
+        System.out.println(userDTO.getUsername());
         if(fetchedByName.size()==1){
-            var  t = UserClassConverter.toDTO(databaseService.findByUsernameEqualsAndPasswordEquals(user.getUsername(),user.getPassword()));
-            t.setMessage(new StatusObj(STATUS.SUCCESS,"logged in"));
-            System.out.println(t.getMessage().getMessage());
-            return t;
+//            var  t = UserClassConverter.toDTO(databaseService.findByUsernameEqualsAndPasswordEquals(user.getUsername(),user.getPassword()));
+            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,"logged in"));
+            System.out.println(userDTO.getMessage().getMessage());
+            return userDTO;
         }
-        var t = UserClassConverter.toDTO(user);
-        t.setMessage(new StatusObj(STATUS.FAILED,"user not logged in"));
-        System.out.println(t.getMessage().getMessage());
-        return t;
+//        var t = UserClassConverter.toDTO(user);
+        userDTO.setMessage(new StatusObj(STATUS.FAILED,"user not logged in"));
+        System.out.println(userDTO.getMessage().getMessage());
+        return userDTO;
     }
     @PutMapping("/logout")
     public void logout(@RequestBody User user) {

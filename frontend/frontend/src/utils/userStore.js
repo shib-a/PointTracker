@@ -7,6 +7,7 @@ const authReducer = (user = new User("",""), action) =>{
             // const data = action.payload;
             user.username=action.username
             user.password=action.password;
+            user.isLoggedIn=action.isLoggedIn;
             return user;
             // return user.isLoggedIn = true
         }

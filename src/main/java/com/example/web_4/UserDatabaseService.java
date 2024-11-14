@@ -20,8 +20,10 @@ public class UserDatabaseService {
     }
     @Transactional
     public User save(User user) {
-        var p = encoder.encode(user.getPassword());
-        var s = userRepository.save(new User(user.getUsername(), p));
+        user.setPassword(encoder.encode(user.getPassword()));
+        System.out.println(user.getUsername());
+        System.out.println(user.getPassword());
+        var s = userRepository.save(user);
         return s;
     }
     @Transactional

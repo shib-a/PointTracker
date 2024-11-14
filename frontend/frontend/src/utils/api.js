@@ -3,7 +3,7 @@ import axios from "axios";
 const url = "http://localhost:8080/api"
 
 export async function postUser(data){
-    const result = await axios.post(url+"/users/register",data);
+    const result = await axios.post(url+"/users/register",data, {withCredentials: true});
     return result.data;
 }
 export async function postPoint(data){
@@ -15,6 +15,6 @@ export async function getPoints(){
     return result;
 }
 export async function putUser(data){
-    const result = await axios.put(url+"/users/login",data);
+    const result = await axios.put(url+"/users/login",data, {withCredentials: true});
     return result.data;
 }
