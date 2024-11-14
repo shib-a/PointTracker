@@ -23,15 +23,15 @@ public class PointDatabaseService {
     @Transactional
     public Point save(Point point){
         var s = pointRepository.save(point);
-        sseController.sendUpdate(true);
+//        sseController.sendUpdate(true);
         return s;
     }
     void delete(Point point){
         pointRepository.delete(point);
     }
     @Transactional
-    void deleteAll(){
+    public void deleteAll(){
         pointRepository.deleteAll();
-        sseController.sendUpdate(true);
+//        sseController.sendUpdate(true);
     }
 }
