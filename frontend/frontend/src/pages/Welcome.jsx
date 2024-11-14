@@ -23,31 +23,29 @@ export default function Welcome(){
                 console.log(res);
                 const user = new User(res.username, res.password, true);
                 console.log(user.isLoggedIn);
-                store.dispatch({type: "UPDATE_USER_DATA", username: user.username, password: user.password, isLoggedIn: user.isLoggedIn});
-                console.log(userStore.getState().isLoggedIn);
+                console.log(user.username);
+                store.dispatch({type: "UPDATE_USER_DATA", username: res.username, password: res.password, isLoggedIn: user.isLoggedIn});
+                console.log(userStore.getState().username);
+                localStorage.setItem("user", JSON.stringify(userStore.getState()));
+                console.log(JSON.stringify(store.getState()));
                 navigate("main")
             // })
         // console.log(res.data)
     }
-    useEffect(() => {
-        const checkStatus = async () =>
-        {
-            const t = store.getState();
-            if (t.isLoggedIn) {
-                navigate("/main", {replace: true});
-            }
-        };
-        checkStatus();
-    },[store, navigate]);
     async function handleRegister(){
         store.dispatch({type: "UPDATE_USER_DATA", username: username, password: password});
         console.log(store.getState());
         const res = postUser(store.getState())
             .then(() => {
-                    const userData = res.data;
-                    const user = new User(userData.username, userData.password, true);
-                    console.log(user.isLoggedIn);
-                    store.dispatch({type: "UPDATE_USER_DATA", username: user.username, password: user.password, isLoggedIn: user.isLoggedIn});
+                console.log(res);
+                const user = new User(res.username, res.password, true);
+                console.log(user.isLoggedIn);
+                console.log(user.username);
+                store.dispatch({type: "UPDATE_USER_DATA", username: res.username, password: res.password, isLoggedIn: user.isLoggedIn});
+                console.log(userStore.getState().username);
+                localStorage.setItem("user", JSON.stringify(userStore.getState()));
+                console.log(JSON.stringify(store.getState()));
+                navigate("main")
                 }
             )
             .catch(() => {

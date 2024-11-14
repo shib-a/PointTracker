@@ -5,13 +5,14 @@ import Main from "./Main";
 import Welcome from "./Welcome";
 import NotFound from "./NotFound";
 import userStore from "../utils/userStore";
+import store from "../utils/userStore";
 
 function App() {
    return(
        <Router>
            <Routes>
                <Route path={"/main"} element={
-               userStore.getState().isLoggedIn?(<Main/>):(
+                   store.getState().isLoggedIn?(<Main/>):(
                    <Navigate to="/" replace/>
                )
                }/>

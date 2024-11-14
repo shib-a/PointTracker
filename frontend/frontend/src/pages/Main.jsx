@@ -2,18 +2,21 @@ import React, {useEffect, useState} from "react";
 import {getValue} from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 import Slider from "../components/Slider";
-import Button from "../components/Button";
 import {Point} from "../utils/point"
 import {useNavigate} from "react-router-dom";
 import button from "../components/Button";
+import {getPoints} from "../utils/api";
+import {Button} from "primereact/button";
+// import InputSpinner from "@"
 
+// const eventSource = new EventSource('/api/points/stream');
 
-const eventSource = new EventSource('/api/points/stream');
-eventSource.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    console.log('Received update:', data);
-};
+// eventSource.onmessage = (event) => {
+//     const data = JSON.parse(event.data);
+//     console.log('Received update:', data);
+// };
 function Main() {
+    const eventSource = new EventSource("http://localhost:8080/sse/updates");
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -23,16 +26,18 @@ function Main() {
     const [r_val, setR_val] = useState(0);
     const [hit_val, setHit_val] = useState(false);
 
+    // getData();
     const navigate = useNavigate();
     function logout(){
         navigate("/");
     }
 
     async function getData() {
-        // return axios.get('http://localhost:8080/api/get');
-        const response = await axios.get('http://localhost:8080/api/get');
-        let result = response.data;
-        setPoints(result.map(point => new Point(point.x, point.y, point.r, point.hit)))
+        const response = getPoints()
+            .then(() =>{
+                setPoints(response.map(point => new Point(point.x, point.y, point.r, point.hit)));
+            })
+            .catch(error => console.log(error))
     }
 
     async function postData(obj_data) {
@@ -44,17 +49,24 @@ function Main() {
         const result = await axios.delete('http://localhost:8080/api/clear');
         return result.data
     }
-
-    useEffect(() => {
-        getData();
-        console.log(points)
-        const eventSource = new EventSource("http://localhost:8080/sse/updates")
-        eventSource.addEventListener('update', (event) => {
-            if (event.data === true) {
-                getData();
-            }
-        })
-    }, [points]);
+    function handleLogout(){
+        localStorage.clear();
+        navigate("/");
+    }
+    getData();
+    // useEffect(() => {
+    //     console.log(points)
+    //     eventSource.onmessage = (event) => {
+    //         // getData();
+    //         console.log(event.data);
+    //         // setPoints((prevPoints) => [...prevPoints, event.data]);
+    //     }
+    //     // eventSource.addEventListener('update', (event) => {
+    //     //     if (event.data === true) {
+    //     //         getData();
+    //     //     }
+    //     // })
+    // }, [points]);
     useEffect(() => {
         if (submitButtonClicked) {
             setSubmitButtonClicked(false);
@@ -80,7 +92,7 @@ function Main() {
             <header className="main_header">
                 <h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>
             </header>
-            <Button onClick={logout} type={button} children={"logout"}/>
+            <Button onClick={handleLogout} type={"button"} children={"logout"}/>
             <form id="data">
                 <div className="q_entry">
                     <div>
@@ -90,7 +102,7 @@ function Main() {
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>
-                    <Slider min={-5} max={5} value={y_val} step={0.25} onChange={(e) => {
+                    <Slider min={-3} max={5} value={y_val} step={0.01} onChange={(e) => {
                         setY_val(e.target.value)
                         console.log(y_val)
                     }}/>
@@ -134,7 +146,6 @@ function Main() {
                 {/*<commandButton id="redirectButton" value="Go back" action="index"/>*/}
             </form>
         </div>
-        <outputScript name="graph.js"/>
         </body>
         </html>
     );

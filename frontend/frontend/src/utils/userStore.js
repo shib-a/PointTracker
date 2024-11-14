@@ -15,5 +15,26 @@ const authReducer = (user = new User("",""), action) =>{
         default: return user;
     }
 };
-const store = createStore(authReducer)
+const nullUser = {username: "", password: "", isLoggedIn: false};
+const loadState = () =>{
+    try{
+        const data = localStorage.getItem("user");
+        if(data==null){
+            return nullUser;
+        }
+        return JSON.parse(data)
+    } catch (e){
+        localStorage.setItem("user", JSON.stringify(nullUser));
+    }
+};
+const saveState = (user) =>{
+    try {
+        localStorage.setItem("user", JSON.stringify(user));
+    } catch (e){}
+}
+const user = loadState();
+const store = createStore(authReducer, user);
+store.subscribe(() =>{
+    saveState(store.getState());
+})
 export default store;
