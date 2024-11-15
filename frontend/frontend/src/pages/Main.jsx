@@ -7,6 +7,7 @@ import {useNavigate} from "react-router-dom";
 import button from "../components/Button";
 import {getPoints} from "../utils/api";
 import {Button} from "primereact/button";
+import Spinner from "../components/Spinner";
 // import InputSpinner from "@"
 
 // const eventSource = new EventSource('/api/points/stream');
@@ -16,7 +17,7 @@ import {Button} from "primereact/button";
 //     console.log('Received update:', data);
 // };
 function Main() {
-    const eventSource = new EventSource("http://localhost:8080/sse/updates");
+    // const eventSource = new EventSource("http://localhost:8080/sse/updates");
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -53,20 +54,7 @@ function Main() {
         localStorage.clear();
         navigate("/");
     }
-    getData();
-    // useEffect(() => {
-    //     console.log(points)
-    //     eventSource.onmessage = (event) => {
-    //         // getData();
-    //         console.log(event.data);
-    //         // setPoints((prevPoints) => [...prevPoints, event.data]);
-    //     }
-    //     // eventSource.addEventListener('update', (event) => {
-    //     //     if (event.data === true) {
-    //     //         getData();
-    //     //     }
-    //     // })
-    // }, [points]);
+
     useEffect(() => {
         if (submitButtonClicked) {
             setSubmitButtonClicked(false);
@@ -98,7 +86,8 @@ function Main() {
                     <div>
                         <label>Изменение X</label>
                     </div>
-                    <Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e) => setX_val(e.target.value)}/>
+                    {/*<Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e) => setX_val(e.target.value)}/>*/}
+                    <Spinner min={-5} max={5} step={0.25} value={x_val}/>
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>
