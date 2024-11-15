@@ -1,14 +1,11 @@
 import React, {useEffect, useState} from "react";
-import {getValue} from "@testing-library/user-event/dist/utils";
 import axios from "axios";
 import Slider from "../components/Slider";
 import {Point} from "../utils/point"
 import {useNavigate} from "react-router-dom";
-import button from "../components/Button";
 import {getPoints} from "../utils/api";
 import {Button} from "primereact/button";
 import Spinner from "../components/Spinner";
-// import InputSpinner from "@"
 
 // const eventSource = new EventSource('/api/points/stream');
 
@@ -67,7 +64,6 @@ function Main() {
         if (clearButtonClicked) {
             setClearButtonClicked(false);
             clearData();
-            // setPoints([]);
         }
     }, [clearButtonClicked, points]);
     return (
@@ -86,8 +82,7 @@ function Main() {
                     <div>
                         <label>Изменение X</label>
                     </div>
-                    {/*<Slider min={-5} max={5} value={x_val} step={0.25} onChange={(e) => setX_val(e.target.value)}/>*/}
-                    <Spinner min={-5} max={5} step={0.25} value={x_val}/>
+                    <Spinner min={-5} max={5} step={0.25} value={x_val} onChange={(e) => setX_val(e.currentTarget.value)} />
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>

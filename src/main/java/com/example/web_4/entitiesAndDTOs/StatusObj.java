@@ -11,4 +11,5 @@ public class StatusObj {
     public String getMessage() {return message;}
     public void setStatus(STATUS status) {this.status = status;}
     public void setMessage(String message) {this.message = message;}
+
 }

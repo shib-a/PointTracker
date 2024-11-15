@@ -4,27 +4,22 @@ import {InputText} from "primereact/inputtext";
 import {InputTextarea} from "primereact/inputtextarea";
 
 
-function Spinner({min, max, step, value, onChange}) {
+function Spinner({min, max, step, value}) {
     const [val, changeVal] = useState(value);
-
 
     function handleInc() {
         if (val < max) {
             changeVal(val + step);
             value = val;
-            return val;
         }
         value = val;
-        return val;
     }
     function handleDec() {
         if (val > min) {
             changeVal(val - step);
             value = val;
-            return val;
         }
         value = val;
-        return val;
     }
     return(
         <div className="spinnerDiv">

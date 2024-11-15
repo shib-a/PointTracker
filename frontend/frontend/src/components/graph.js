@@ -271,5 +271,3 @@ function drawPoints(){
 function convertToCanvas(x,y){
     return [(x*height)/5, (-y*height)/5];
 }
-// $("#table").change(function (){redraw()});
-// $("#clean_button").change(function (){redraw()});
