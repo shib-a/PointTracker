@@ -18,7 +18,7 @@ function Main() {
     const [y_val, setY_val] = useState(0);
     const [r_val, setR_val] = useState(1);
     const [hit_val, setHit_val] = useState(false);
-
+    const [clickTrigger, setClickTrigger] = useState(false);
     // getData();
     const navigate = useNavigate();
     function logout(){
@@ -82,8 +82,12 @@ function Main() {
                 });
         }
         getPts();
+        setClickTrigger(false);
         console.log(points);
-    }, [r_val])
+    }, [r_val, clickTrigger])
+    function handleR(val){
+        setX_val(val);
+    }
     return (
         <html>
         <head>
@@ -120,16 +124,16 @@ function Main() {
                 }} children={"send"} type={"button"}/>
             </form>
             <div id="graph_div">
-                <Graph radius = {r_val} points={points}>
-                </Graph>
+                <Graph radius = {r_val} points={points} trigger={clickTrigger} updateTrigger={
+                    (chval) => {
+                    setR_val(0); // how tf does this work
+                    console.log("changed?")
+                }
+
+                }/>
             </div>
             <Button onClick={() =>
-                // setClearButtonClicked(true)
-            {
-                console.log(x_val);
-                console.log(y_val);
-                console.log(r_val);
-            }
+                setClearButtonClicked(true)
             } children={"clear"} type={"button"}/>
             <table>
                 <thead>

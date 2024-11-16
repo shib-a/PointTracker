@@ -1,5 +1,7 @@
 import React, {useEffect, useState, useRef} from 'react';
-function Graph({radius, points}) {
+import axios from "axios";
+import {Point} from "../utils/point";
+function Graph({radius, points, trigger, updateTrigger}) {
     const canvasRef = useRef(null);
     useEffect(() => {
         const canvas = canvasRef.current;
@@ -240,45 +242,36 @@ function Graph({radius, points}) {
                 context.stroke();
                 console.log("dots drawn")
         })
-
-        // let table = document.getElementById("table");
-        // let rows = table.getElementsByTagName('tr');
-        // for(let i = 0; i<rows.length;i++){
-            // let cells = rows[i].getElementsByTagName('td');
-            // if (cells[0] != null && cells[1] != null && r!==0) {
-            //     let x = cells[0].innerText;
-            //     let y = cells[1].innerText;
-            //     if(y===""){
-            //         continue;}
-            //     let ptCoords = convertToCanvas(x, y, height);
-            //     console.log(ptCoords[0],ptCoords[1]);
-            //     if(i===rows.length-1){
-            //         if(cells[3].innerText==='true'){
-            //             context.strokeStyle='green';
-            //             context.fillStyle='green';
-            //         }else{
-            //             context.strokeStyle='red';
-            //             context.fillStyle='red';
-            //         }
-            //     }
-            //     else{
-            //         context.strokeStyle='grey';
-            //         context.fillStyle='grey'
-            //     }
-            //     context.beginPath();
-            //     context.arc(ptCoords[0], ptCoords[1], 3, 0, 2 * Math.PI);
-            //     context.fill();
-                // context.stroke();
-                // console.log("dots drawn")
-            // }
-        // }
     }
-    function handleClick(){
+    async function handleClick(e){
+        const graph = canvasRef.current;
+        const height = graph.height/2*0.9;
+        const width = graph.width/2*0.9;
+        const context = graph.getContext('2d');
+        context.save();
+        context.translate(graph.height/2,graph.width/2);
 
+        const mouseX = parseFloat(e.clientX);
+        const mouseY = parseFloat(e.clientY);
+        var seX = (mouseX - graph.getBoundingClientRect().left - graph.width / 2) / height * 5;
+        var seY = -(mouseY - graph.getBoundingClientRect().top - graph.height / 2) / height * 5;
+        // async function postData(obj_data) {
+        const obj_data = JSON.stringify(new Point(seX, seY, radius))
+        console.log(obj_data);
+        const result = await axios.post('http://localhost:8080/api/points/post', {x: seX, y:seY, r:radius}, {withCredentials: true});
+            // .then((res) =>{
+        context.restore();
+        updateTrigger(true);
+            // })
+            // setR_val(result.data);
+        // }
+// //     drawPoints();
+// //     console.log(mouseX-graph.getBoundingClientRect().left, mouseY-graph.getBoundingClientRect().top, seX / height * 5, seY / height * 5)
+// // });
     }
     return (
             <div className="graphDiv">
-                <canvas onMouseDown={handleClick} ref={canvasRef} width={400} height={400} >
+                <canvas onMouseDown={(e) => handleClick(e)} ref={canvasRef} width={400} height={400} >
                 </canvas>
             </div>
     )

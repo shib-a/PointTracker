@@ -7,7 +7,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/points")
+@CrossOrigin(origins = "http://localhost:3000")
 public class PointController {
 //    @Autowired
     private final PointDatabaseService pointDatabaseService;
