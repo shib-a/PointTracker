@@ -7,14 +7,8 @@ import {getPoints} from "../utils/api";
 import {Button} from "primereact/button";
 import Spinner from "../components/Spinner";
 
-// const eventSource = new EventSource('/api/points/stream');
 
-// eventSource.onmessage = (event) => {
-//     const data = JSON.parse(event.data);
-//     console.log('Received update:', data);
-// };
 function Main() {
-    // const eventSource = new EventSource("http://localhost:8080/sse/updates");
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -29,6 +23,9 @@ function Main() {
     function logout(){
         navigate("/");
     }
+    const handleXUpdate= (updatedVal) =>{
+       setX_val(updatedVal);
+    };
 
     async function getData() {
         const response = getPoints()
@@ -82,7 +79,7 @@ function Main() {
                     <div>
                         <label>Изменение X</label>
                     </div>
-                    <Spinner min={-5} max={5} step={0.25} value={x_val} onChange={(e) => setX_val(e.currentTarget.value)} />
+                    <Spinner min={-2} max={2} step={0.5} value={x_val} updateValueAction={handleXUpdate} />
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>
@@ -91,11 +88,13 @@ function Main() {
                         console.log(y_val)
                     }}/>
                 </div>
+
                 <div className="q_entry" id='r_choice'>
                     <div>
                         <label>Изменение R</label>
                     </div>
-                    <Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e) => setR_val(e.target.value)}/>
+                    {/*<Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e) => setR_val(e.target.value)}/>*/}
+                    <Spinner min={-2} max={2} step={0.5} value={y_val} updateValueAction={(chval) => setR_val(chval)}/>
                 </div>
                 <Button onClick={() => {
                     setSubmitButtonClicked(true);
@@ -105,7 +104,14 @@ function Main() {
                 <canvas id="graph" width="400" height="400">
                 </canvas>
             </div>
-            <Button onClick={() => setClearButtonClicked(true)} children={"clear"} type={"button"}/>
+            <Button onClick={() =>
+                // setClearButtonClicked(true)
+            {
+                console.log(x_val);
+                console.log(y_val);
+                console.log(r_val);
+            }
+            } children={"clear"} type={"button"}/>
             <table>
                 <thead>
                 <tr>
