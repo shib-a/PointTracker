@@ -49,6 +49,5 @@ public class UserController {
     }
     @PutMapping("/logout")
     public void logout(@RequestBody User user) {
-
     }
 }
