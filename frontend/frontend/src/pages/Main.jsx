@@ -6,6 +6,7 @@ import {useNavigate} from "react-router-dom";
 import {getPoints} from "../utils/api";
 import {Button} from "primereact/button";
 import Spinner from "../components/Spinner";
+import Graph from "../components/Graph";
 
 
 function Main() {
@@ -15,7 +16,7 @@ function Main() {
     const [clearButtonClicked, setClearButtonClicked] = useState(false);
     const [x_val, setX_val] = useState(0);
     const [y_val, setY_val] = useState(0);
-    const [r_val, setR_val] = useState(0);
+    const [r_val, setR_val] = useState(1);
     const [hit_val, setHit_val] = useState(false);
 
     // getData();
@@ -23,20 +24,18 @@ function Main() {
     function logout(){
         navigate("/");
     }
-    const handleXUpdate= (updatedVal) =>{
-       setX_val(updatedVal);
-    };
 
-    async function getData() {
-        const response = getPoints()
-            .then(() =>{
-                setPoints(response.map(point => new Point(point.x, point.y, point.r, point.hit)));
-            })
-            .catch(error => console.log(error))
-    }
+    // async function getData() {
+    //     const response = getPoints()
+    //         .then(() =>{
+    //             setPoints(response.map(point => new Point(point.x, point.y, point.r, point.hit)));
+    //         })
+    //         .catch(error => console.log(error))
+    // }
 
     async function postData(obj_data) {
-        const result = await axios.post('http://localhost:8080/api/post', obj_data);
+        const result = await axios.post('http://localhost:8080/api/points/post', obj_data);
+        setR_val(result.data);
         return result.data;
     }
 
@@ -63,6 +62,28 @@ function Main() {
             clearData();
         }
     }, [clearButtonClicked, points]);
+    useEffect( () => {
+        async function getPts() {
+            // const res = getPoints();
+            const result = await axios.get("http://localhost:8080/api/points/get", {withCredentials: true})
+                .then((response) => {
+                    console.log(response.data);
+                    const arr = []
+                    console.log(arr);
+                    response.data.forEach((point) => {
+                        arr.push(new Point(point.x, point.y,point.hit));
+                        console.log(point);
+                    })
+                    console.log(arr)
+                    setPoints(arr);
+                })
+                .catch((error) => {
+                    // console.error('GET Error:', error);
+                });
+        }
+        getPts();
+        console.log(points);
+    }, [r_val])
     return (
         <html>
         <head>
@@ -79,13 +100,12 @@ function Main() {
                     <div>
                         <label>Изменение X</label>
                     </div>
-                    <Spinner min={-2} max={2} step={0.5} value={x_val} updateValueAction={handleXUpdate} />
+                    <Spinner min={-2} max={2} step={0.5} value={x_val} updateValueAction={(updatedVal) => setX_val(updatedVal)} />
                 </div>
                 <div className="q_entry">
                     <div><label>Изменение Y</label></div>
-                    <Slider min={-3} max={5} value={y_val} step={0.01} onChange={(e) => {
-                        setY_val(e.target.value)
-                        console.log(y_val)
+                    <Slider min={-3} max={5} value={y_val} step={0.05} onChange={(e) => {
+                        setY_val(e.target.value);
                     }}/>
                 </div>
 
@@ -93,16 +113,15 @@ function Main() {
                     <div>
                         <label>Изменение R</label>
                     </div>
-                    {/*<Slider min={-5} max={5} value={r_val} step={0.25} onChange={(e) => setR_val(e.target.value)}/>*/}
-                    <Spinner min={-2} max={2} step={0.5} value={y_val} updateValueAction={(chval) => setR_val(chval)}/>
+                    <Spinner min={-2} max={2} step={0.5} value={r_val} updateValueAction={(chval) => setR_val(chval)}/>
                 </div>
                 <Button onClick={() => {
                     setSubmitButtonClicked(true);
                 }} children={"send"} type={"button"}/>
             </form>
             <div id="graph_div">
-                <canvas id="graph" width="400" height="400">
-                </canvas>
+                <Graph radius = {r_val} points={points}>
+                </Graph>
             </div>
             <Button onClick={() =>
                 // setClearButtonClicked(true)
@@ -122,19 +141,17 @@ function Main() {
                 </tr>
                 </thead>
                 <tbody>
-                {points.map((pt) => (
+                { points.map((pt) => (
                     <tr>
                         <td>{pt.x}</td>
                         <td>{pt.y}</td>
                         <td>{pt.r}</td>
                         <td>{pt.hit ? "yes" : "no"}</td>
                     </tr>
-                ))}
+                ))
+                }
                 </tbody>
             </table>
-            <form id="goBackForm">
-                {/*<commandButton id="redirectButton" value="Go back" action="index"/>*/}
-            </form>
         </div>
         </body>
         </html>
