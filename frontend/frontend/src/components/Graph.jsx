@@ -258,7 +258,7 @@ function Graph({radius, points, trigger, updateTrigger}) {
         // async function postData(obj_data) {
         const obj_data = JSON.stringify(new Point(seX, seY, radius))
         console.log(obj_data);
-        const result = await axios.post('http://localhost:8080/api/points/post', {x: seX, y:seY, r:radius}, {withCredentials: true});
+        const result = await axios.post('http://localhost:8080/api/points/post', {x: seX, y:seY, r:radius}, {withCredentials: true, headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}});
             // .then((res) =>{
         context.restore();
         updateTrigger(true);

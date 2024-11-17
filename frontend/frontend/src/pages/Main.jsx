@@ -10,6 +10,7 @@ import Graph from "../components/Graph";
 
 
 function Main() {
+    console.log('localStorage:' + localStorage.getItem("accessToken") + typeof(localStorage.getItem("accessToken")));
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -34,7 +35,7 @@ function Main() {
     // }
 
     async function postData(obj_data) {
-        const result = await axios.post('http://localhost:8080/api/points/post', obj_data);
+        const result = await axios.post('http://localhost:8080/api/points/post', obj_data, {withCredentials: true, headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}});
         setR_val(result.data);
         return result.data;
     }
@@ -45,6 +46,7 @@ function Main() {
     }
     function handleLogout(){
         localStorage.clear();
+        localStorage.setItem("accessToken", null);
         navigate("/");
     }
 
@@ -65,7 +67,7 @@ function Main() {
     useEffect( () => {
         async function getPts() {
             // const res = getPoints();
-            const result = await axios.get("http://localhost:8080/api/points/get", {withCredentials: true})
+            const result = await axios.get("http://localhost:8080/api/points/get", {withCredentials: true, headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}})
                 .then((response) => {
                     console.log(response.data);
                     const arr = []

@@ -8,6 +8,7 @@ import {postUser, putUser} from "../utils/api";
 import {User} from "../utils/user";
 import store from "../utils/userStore";
 import styles from "./Welcome.module.css";
+import axios from "axios";
 
 export default function Welcome(){
     const [username, setUsername] = useState("");
@@ -27,7 +28,13 @@ export default function Welcome(){
                 store.dispatch({type: "UPDATE_USER_DATA", username: res.username, password: res.password, isLoggedIn: user.isLoggedIn});
                 console.log(userStore.getState().username);
                 localStorage.setItem("user", JSON.stringify(userStore.getState()));
+                localStorage.setItem("accessToken", res.message.message);
+                axios.defaults.withCredentials = true;
+                axios.defaults.headers.common["Authorization"] = `Bearer ${localStorage.getItem("accessToken")}`;
                 console.log(JSON.stringify(store.getState()));
+                console.log(localStorage.getItem("accessToken"));
+                // localStorage.setItem("authToken", res.data.token);
+        console.log('localStorage:' + localStorage.getItem("accessToken") + typeof(localStorage.getItem("accessToken")));
                 navigate("main")
             // })
         // console.log(res.data)

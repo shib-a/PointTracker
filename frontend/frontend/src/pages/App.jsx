@@ -7,18 +7,20 @@ import NotFound from "./NotFound";
 import userStore from "../utils/userStore";
 import store from "../utils/userStore";
 import axios from "axios";
+import {User} from "../utils/user";
 
 function App() {
-
+    // localStorage.setItem("accessToken", null);
    return(
        <Router>
            <Routes>
                <Route path={"/main"} element={
-                   store.getState().isLoggedIn?(<Main/>):(
+                   localStorage.getItem("accessToken")!=="null"?(<Main/>):(
                    <Navigate to="/" replace/>
                )
                }/>
-               <Route path={"/"} element={<Welcome/>}/>
+               <Route path={"/"} element={
+                   (<Welcome/>)}/>
                <Route path={"*"} element={<NotFound/>}/>
            </Routes>
        </Router>
