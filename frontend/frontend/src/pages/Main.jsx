@@ -10,7 +10,8 @@ import Graph from "../components/Graph";
 
 
 function Main() {
-    console.log('localStorage:' + localStorage.getItem("accessToken") + typeof(localStorage.getItem("accessToken")));
+    // console.log('localStorage:' + localStorage.getItem("accessToken") + typeof(localStorage.getItem("accessToken")));
+    const [r_loc, setR_loc] = useState(1);
     const [points, setPoints] = useState([]);
     const [point, setPoint] = useState(new Point());
     const [submitButtonClicked, setSubmitButtonClicked] = useState(false);
@@ -20,23 +21,14 @@ function Main() {
     const [r_val, setR_val] = useState(1);
     const [hit_val, setHit_val] = useState(false);
     const [clickTrigger, setClickTrigger] = useState(false);
-    // getData();
     const navigate = useNavigate();
     function logout(){
         navigate("/");
     }
 
-    // async function getData() {
-    //     const response = getPoints()
-    //         .then(() =>{
-    //             setPoints(response.map(point => new Point(point.x, point.y, point.r, point.hit)));
-    //         })
-    //         .catch(error => console.log(error))
-    // }
-
     async function postData(obj_data) {
         const result = await axios.post('http://localhost:8080/api/points/post', obj_data, {withCredentials: true, headers: {Authorization: `Bearer ${localStorage.getItem('accessToken')}`}});
-        setR_val(result.data);
+        // setR_val(result.data);
         return result.data;
     }
 
@@ -58,12 +50,15 @@ function Main() {
             postData(obj_data);
         }
     }, [submitButtonClicked, point, points, x_val, y_val, r_val]);
+
     useEffect(() => {
         if (clearButtonClicked) {
             setClearButtonClicked(false);
             clearData();
         }
     }, [clearButtonClicked, points]);
+
+
     useEffect( () => {
         async function getPts() {
             // const res = getPoints();
@@ -71,13 +66,12 @@ function Main() {
                 .then((response) => {
                     console.log(response.data);
                     const arr = []
-                    console.log(arr);
                     response.data.forEach((point) => {
-                        arr.push(new Point(point.x, point.y,point.hit));
+                        arr.push(new Point(point.x, point.y, point.r, point.hit, point.id));
                         console.log(point);
                     })
-                    console.log(arr)
                     setPoints(arr);
+
                 })
                 .catch((error) => {
                     // console.error('GET Error:', error);
@@ -90,6 +84,15 @@ function Main() {
     function handleR(val){
         setX_val(val);
     }
+
+    function handleTableClick(point){
+        console.log(point);
+        setR_val(point.r);
+        setClickTrigger(true);
+    }
+
+
+
     return (
         <html>
         <head>
@@ -97,9 +100,6 @@ function Main() {
         </head>
         <body>
         <div className="base">
-            <header className="main_header">
-                <h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>
-            </header>
             <Button onClick={handleLogout} type={"button"} children={"logout"}/>
             <form id="data">
                 <div className="q_entry">
@@ -126,7 +126,7 @@ function Main() {
                 }} children={"send"} type={"button"}/>
             </form>
             <div id="graph_div">
-                <Graph radius = {r_val} points={points} trigger={clickTrigger} updateTrigger={
+                <Graph id radius = {r_val} points={points} r_loc={r_loc} updateR_loc={(chval) => setR_loc(chval)} trigger={clickTrigger} updateTrigger={
                     (chval) => {
                     setR_val(0); // how tf does this work
                     console.log("changed?")
@@ -148,11 +148,11 @@ function Main() {
                 </thead>
                 <tbody>
                 { points.map((pt) => (
-                    <tr>
+                    <tr id={pt.id}>
                         <td>{pt.x}</td>
                         <td>{pt.y}</td>
                         <td>{pt.r}</td>
-                        <td>{pt.hit ? "yes" : "no"}</td>
+                        <td onMouseDown={(e) => handleTableClick(pt)}>{pt.hit ? "yes" : "no"}</td>
                     </tr>
                 ))
                 }

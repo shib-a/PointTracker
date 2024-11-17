@@ -2,7 +2,7 @@ import {InputText} from "primereact/inputtext";
 import {Password} from "primereact/password";
 import {Button} from "primereact/button";
 import {useNavigate} from "react-router-dom";
-import {useEffect, useState} from "react";
+import React, {useEffect, useState} from "react";
 import userStore from "../utils/userStore";
 import {postUser, putUser} from "../utils/api";
 import {User} from "../utils/user";
@@ -64,14 +64,18 @@ return(
     <head>
 
     </head>
-    <body className={styles.body}>
-    <div className={styles.container}>
-        <InputText onInput={(e) => setUsername(e.target.value)} value={username} className={styles.inputField}/>
-        <Password onInput={(e)=>setPassword(e.target.value)} value={password} className={styles.inputField}/>
-    </div>
-    <div className={styles.buttonContainer}>
+
+    <body className={styles.container}>
+    <header className={styles.titleContainer}>
+        <h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>
+    </header>
+    <div className={styles.loginBox}>
+        <InputText onInput={(e) => setUsername(e.target.value)} value={username} className={styles.input}/>
+        <Password onInput={(e) => setPassword(e.target.value)} value={password} className={styles.input}/>
         <Button className={styles.button} type={"button"} onClick={handleLogin} children={"login"}/>
-        <Button className={styles.button} type={"button"} onClick={handleRegister} children={"register"}/>
+        <Button className={styles.button} type={"button"} onClick={handleRegister} children={"register"}/></div>
+    <div className={styles.container}>
+
     </div>
     </body>
     </html>
