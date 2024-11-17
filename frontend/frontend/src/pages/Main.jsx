@@ -7,7 +7,7 @@ import {getPoints} from "../utils/api";
 import {Button} from "primereact/button";
 import Spinner from "../components/Spinner";
 import Graph from "../components/Graph";
-
+import styles from "./Main.module.css";
 
 function Main() {
     // console.log('localStorage:' + localStorage.getItem("accessToken") + typeof(localStorage.getItem("accessToken")));
@@ -99,9 +99,8 @@ function Main() {
             <title>web_4</title>
         </head>
         <body>
-        <div className="base">
-            <Button onClick={handleLogout} type={"button"} children={"logout"}/>
-            <form id="data">
+        <div className={styles.container}>
+            <div className={styles.inputContainer}>
                 <div className="q_entry">
                     <div>
                         <label>Изменение X</label>
@@ -124,40 +123,39 @@ function Main() {
                 <Button onClick={() => {
                     setSubmitButtonClicked(true);
                 }} children={"send"} type={"button"}/>
-            </form>
-            <div id="graph_div">
+                <Button onClick={handleLogout} type={"button"} children={"logout"}/>
+            </div>
+            <div className={styles.graphContainer}>
                 <Graph id radius = {r_val} points={points} r_loc={r_loc} updateR_loc={(chval) => setR_loc(chval)} trigger={clickTrigger} updateTrigger={
                     (chval) => {
                     setR_val(0); // how tf does this work
                     console.log("changed?")
                 }
-
                 }/>
             </div>
-            <Button onClick={() =>
-                setClearButtonClicked(true)
-            } children={"clear"} type={"button"}/>
-            <table>
-                <thead>
-                <tr>
-                    <th>x</th>
-                    <th>y</th>
-                    <th>r</th>
-                    <th>hit?</th>
-                </tr>
-                </thead>
-                <tbody>
-                { points.map((pt) => (
-                    <tr id={pt.id}>
-                        <td>{pt.x}</td>
-                        <td>{pt.y}</td>
-                        <td>{pt.r}</td>
-                        <td onMouseDown={(e) => handleTableClick(pt)}>{pt.hit ? "yes" : "no"}</td>
+            <div className={styles.tableContainer}>
+                <table className={styles.table}>
+                    <thead>
+                    <tr>
+                        <th>x</th>
+                        <th>y</th>
+                        <th>r</th>
+                        <th>hit?</th>
                     </tr>
-                ))
-                }
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                    { points.map((pt) => (
+                        <tr id={pt.id}>
+                            <td>{pt.x}</td>
+                            <td>{pt.y}</td>
+                            <td>{pt.r}</td>
+                            <td onMouseDown={(e) => handleTableClick(pt)}>{pt.hit ? "yes" : "no"}</td>
+                        </tr>
+                    ))
+                    }
+                    </tbody>
+                </table>
+            </div>
         </div>
         </body>
         </html>

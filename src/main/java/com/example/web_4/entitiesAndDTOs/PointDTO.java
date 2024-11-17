@@ -6,11 +6,18 @@ public class PointDTO {
     private double y;
     private double r;
     private boolean hit;
+    private long id;
     public PointDTO(double x, double y, double r, boolean hit){
         this.x=x;
         this.y=y;
         this.r=r;
         this.hit=hit;
+    }
+    public PointDTO(double x, double y, double r, boolean hit, long id){
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.id=id;
     }
     public double getR() {
         return r;
@@ -45,5 +52,13 @@ public class PointDTO {
     }
     public void setR(double r) {
         this.r = r;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

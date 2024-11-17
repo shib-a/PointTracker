@@ -26,6 +26,7 @@ public class PointController {
     @PostMapping("/post")
     public Point save(@RequestBody Point point){
         point.setHit(AreaCheckService.validate(point.getX(),point.getY(),point.getR()));
+        System.out.println(point.getHit());
         pointDatabaseService.save(point);
         return null;
     }

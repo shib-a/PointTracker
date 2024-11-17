@@ -79,4 +79,12 @@ public class Point implements Serializable {
                 ", hit=" + hit +
                 '}';
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }

@@ -258,10 +258,8 @@ function Graph({radius, points, trigger, updateTrigger, r_loc, updateR_loc}) {
         updateTrigger(true);
     }
     return (
-            <div className="graphDiv">
                 <canvas onMouseDown={(e) => handleClick(e)} ref={canvasRef} width={400} height={400} >
                 </canvas>
-            </div>
     )
 }
 export default Graph;
