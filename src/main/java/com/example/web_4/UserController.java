@@ -15,13 +15,16 @@ public class UserController {
 
     @Autowired
     public UserController(UserDatabaseService userDatabaseService){this.databaseService=userDatabaseService;}
+
+
     @PostMapping("/register")
     public UserDTO register(@RequestBody UserDTO userDTO) {
         var user = UserClassConverter.toClass(userDTO);
         var fetchUserWithLogin = databaseService.findUserByUsername(user.getUsername());
         if (fetchUserWithLogin.isEmpty()) {
             databaseService.save(user);
-            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,"registered"));
+            String token = JwtUtil.generateToken(user.getUsername());
+            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,token));
             return userDTO;
         } else {
             userDTO.setMessage(new StatusObj(STATUS.FAILED,"user already exists"));
@@ -34,12 +37,11 @@ public class UserController {
         var fetchedByName = databaseService.findUserByUsername(user.getUsername());
         System.out.println(userDTO.getUsername());
         if(fetchedByName.size()==1){
-//            var  t = UserClassConverter.toDTO(databaseService.findByUsernameEqualsAndPasswordEquals(user.getUsername(),user.getPassword()));
-            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,"logged in"));
+            String token = JwtUtil.generateToken(user.getUsername());
+            userDTO.setMessage(new StatusObj(STATUS.SUCCESS,token));
             System.out.println(userDTO.getMessage().getMessage());
             return userDTO;
         }
-//        var t = UserClassConverter.toDTO(user);
         userDTO.setMessage(new StatusObj(STATUS.FAILED,"user not logged in"));
         System.out.println(userDTO.getMessage().getMessage());
         return userDTO;
