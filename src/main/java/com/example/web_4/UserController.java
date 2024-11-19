@@ -18,9 +18,6 @@ public class UserController {
     @PostMapping("/register")
     public UserDTO register(@RequestBody UserDTO userDTO) {
         var user = UserClassConverter.toClass(userDTO);
-        System.out.println(user.getUsername());
-        System.out.println();
-        System.out.println(user.getPassword());
         var fetchUserWithLogin = databaseService.findUserByUsername(user.getUsername());
         if (fetchUserWithLogin.isEmpty()) {
             databaseService.save(user);
