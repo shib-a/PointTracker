@@ -7,11 +7,19 @@ public class PointDTO {
     private double r;
     private boolean hit;
     private long id;
+    private long userID;
     public PointDTO(double x, double y, double r, boolean hit){
         this.x=x;
         this.y=y;
         this.r=r;
         this.hit=hit;
+    }
+    public PointDTO(double x, double y, double r, boolean hit, long id, long userID){
+        this.x=x;
+        this.y=y;
+        this.r=r;
+        this.hit=hit;
+        this.id=id;
     }
     public PointDTO(double x, double y, double r, boolean hit, long id){
         this.x=x;
@@ -60,5 +68,13 @@ public class PointDTO {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public long getUserID() {
+        return userID;
+    }
+
+    public void setUserID(long userID) {
+        this.userID = userID;
     }
 }

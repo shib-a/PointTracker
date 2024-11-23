@@ -17,6 +17,8 @@ public class Point implements Serializable {
     private double r;
     @Column(name="hit")
     private boolean hit;
+    @Column(name="user_id", nullable=false)
+    private long userID;
     public Point(double x, double y, double r, boolean hit){
         this.x=x;
         this.y=y;

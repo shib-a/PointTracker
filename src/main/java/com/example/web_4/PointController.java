@@ -20,13 +20,13 @@ public class PointController {
     @GetMapping("/get")
     public List<Point> getPoints(){
         var all = pointDatabaseService.findAll();
-        System.out.println(all);
+//        System.out.println(all);
         return all;
     }
     @PostMapping("/post")
     public Point save(@RequestBody Point point){
         point.setHit(AreaCheckService.validate(point.getX(),point.getY(),point.getR()));
-        System.out.println(point.getHit());
+//        System.out.println(point.getHit());
         pointDatabaseService.save(point);
         return null;
     }
