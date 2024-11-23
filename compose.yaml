@@ -1,12 +1,41 @@
 services:
+
   postgres:
     env_file:
       - .env
     image: 'postgres:latest'
     restart: unless-stopped
     environment:
-      - 'POSTGRES_DB=postgres'
+      - POSTGRES_DB=$DATABASE_LOC
       - POSTGRES_PASSWORD=$DATABASE_LOC_PASS
       - POSTGRES_USER=$DATABASE_LOC_USER
     ports:
-      - '5432'
+      - '5432:5432'
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend/frontend/
+      dockerfile: Dockerfile
+    ports:
+      - '3000:80'
+    networks:
+      - app-network
+
+  backend:
+    build:
+      context: ./build
+      dockerfile: Dockerfile
+    ports:
+     -  "8080:8080"
+    networks:
+     -  app-network
+    environment:
+      - DATABASE_HOST=$DATABASE_LOC
+      - DATABASE_PASSWORD=$DATABASE_LOC_PASS
+      - DATABASE_USER=$DATABASE_LOC_USER
+      - DATABASE_PORT=5432
+networks:
+  app-network:
+    driver: bridge

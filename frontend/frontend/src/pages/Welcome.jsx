@@ -23,8 +23,6 @@ export default function Welcome(){
             // .then(() => {
                 console.log(res);
                 const user = new User(res.username, res.password, true);
-                console.log(user.isLoggedIn);
-                console.log(user.username);
                 store.dispatch({type: "UPDATE_USER_DATA", username: res.username, password: res.password, isLoggedIn: user.isLoggedIn});
                 console.log(userStore.getState().username);
                 localStorage.setItem("user", JSON.stringify(userStore.getState()));
@@ -45,6 +43,9 @@ export default function Welcome(){
         const res = postUser(store.getState())
             .then(() => {
                 console.log(res);
+                if(res.message.status==="FAILED"){
+
+                }
                 const user = new User(res.username, res.password, true);
                 console.log(user.isLoggedIn);
                 console.log(user.username);
@@ -73,7 +74,7 @@ return(
 
     <body className={styles.container}>
     <header className={styles.titleContainer}>
-        <h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>
+        {/*<h1 id="h1">Мартышов Данила Викторович, Р3207, Вариант 409091</h1>*/}
     </header>
     <div className={styles.loginBox}>
         <InputText onInput={(e) => {
