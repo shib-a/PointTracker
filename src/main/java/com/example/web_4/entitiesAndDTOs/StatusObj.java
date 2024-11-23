@@ -7,6 +7,7 @@ public class StatusObj {
         this.status = status;
         this.message = message;
     }
+
     public STATUS getStatus() {return status;}
     public String getMessage() {return message;}
     public void setStatus(STATUS status) {this.status = status;}
